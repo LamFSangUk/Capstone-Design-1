@@ -7,7 +7,7 @@
 const char* host = "api.thingspeak.com";
 String url = "/update?api_key=SQ1FWF1BVOGE3PJZ";   // Your Own Key here
 const int httpPort = 80;
-int interval = 60000;
+int interval = 18000;
 
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
@@ -15,9 +15,14 @@ int interval = 60000;
 const char* ssid     = "LAMF";
 const char* password = "......";
 
-String working() { 
-  int r = 50; // do some magic here!
-  return(String("field1=")+String(r));
+String working(unsigned long x) { 
+  double v=double(x)/10;
+  Serial.println(v);
+  v=v*3.141592;
+  v=100*sin(v);
+  Serial.print("v : ");
+  Serial.println(v);
+  return(String("field1=")+String(v));
 }
 
 void delivering(String payload) { 
@@ -65,10 +70,12 @@ void setup() {
 }
 
 unsigned long mark = 0;
+unsigned long x=0;
 void loop() {
   if (millis() > mark ) {
      mark = millis() + interval;
-     String payload = working();
+     String payload = working(x);
+     x=x+1;
      delivering(payload);
   }
 }

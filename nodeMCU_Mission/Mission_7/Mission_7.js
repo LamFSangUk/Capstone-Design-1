@@ -70,14 +70,36 @@ app.get('/dump',function(req,res){
 	connection.query('SELECT * from sensors ORDER BY id DESC LIMIT 1440',function(err,rows,cols){
 		if(err) throw err;
 		
+		res.write('<html><head><title>AS 1016 Temperature</title></head><body>');		
+		res.write('<p><h1>Measure Temperature @ AS 1016, Sogang Univ.</h1></p>');
+		res.write('<p>Developed By SangUk Park</p>');	
+		
+		var dt = dateTime.create();
+		var formatted = dt.format('Y-m-d H:M:S');
+		res.write('<p>Dump '+rows.length+' data at '+formatted+'</p>');
+		
 		//Parse data to send Client
-		var dumpdata = '';	
+
+		//Send text-plain data
+		/*var dumpdata = '';	
 		for(var i=0; i<rows.length;i++){
 			var row = rows[i];
 			dumpdata=dumpdata+i+'\t: Time:'+row.time+'\t Temp:'+row.value+'\n';
 		}
 		res.set('Content-Type','text/plain');
 		res.send(dumpdata);
+		*/
+		
+		//Send HTML table
+		res.write('<table border="1">');
+		res.write('<tr><th>Seq.</th><th>Time</th><th>Temp</th></tr>');
+		for(var i=0;i<rows.length;i++){
+			var row=rows[i];
+			res.write('<tr>');
+			res.write('<td>'+i+'</td><td>'+row.time+'</td><td>'+row.value+'</td>');
+			res.write('</tr>');
+		}	
+		res.end('</table></body></html>');
 		console.log('Dump Complete');
 	});
 })

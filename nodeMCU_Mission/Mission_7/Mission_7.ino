@@ -54,48 +54,48 @@ void delivering(String payload) {
   Serial.println(host);
 
   //Connect to ThingSpeak Server
-  if (!client.connect(host, httpPort)) {
+  if (client.connect(host, httpPort)) {
+    //http call to server by using GET Method.
+    String getheader = "GET "+ String(url) +"&field1="+ String(payload) +" HTTP/1.1";
+    client.println(getheader);
+    client.println("User-Agent: ESP8266 Sang Uk");  
+    client.println("Host: " + String(host));  
+    client.println("Connection: close");  
+    client.println();
+
+    Serial.println(getheader);//To Check
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      Serial.println(line);
+    }
+  }
+  else{
     Serial.print("connection failed to ");
     Serial.println(host);
-    return;
-  }
-
-  //http call to server by using GET Method.
-  String getheader = "GET "+ String(url) +"&field1="+ String(payload) +" HTTP/1.1";
-  client.println(getheader);
-  client.println("User-Agent: ESP8266 Sang Uk");  
-  client.println("Host: " + String(host));  
-  client.println("Connection: close");  
-  client.println();
-
-  Serial.println(getheader);//To Check
-  while (client.connected()) {
-    String line = client.readStringUntil('\n');
-    Serial.println(line);
   }
 
   Serial.print("\nconnecting to Host: ");
   Serial.println(private_server);
 
   //Connect to Private Server
-  if(!client.connect(private_server,serverPort)){
-    Serial.print("connection failed to ");
-    Serial.println(host);
-    return;
+  if(client.connect(private_server,serverPort)){
+    //http call to server by using GET Method.
+    String getheader = "GET /?temp="+ String(payload) +" HTTP/1.1";
+    client.println(getheader);
+    client.println("User-Agent: ESP8266 Sang Uk");  
+    client.println("Host: " + String(private_server));  
+    client.println("Connection: close");  
+    client.println();
+  
+    Serial.println(getheader);//To Check
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      Serial.println(line);
+    }
   }
-  
-  //http call to server by using GET Method.
-  getheader = "GET /?temp="+ String(payload) +" HTTP/1.1";
-  client.println(getheader);
-  client.println("User-Agent: ESP8266 Sang Uk");  
-  client.println("Host: " + String(private_server));  
-  client.println("Connection: close");  
-  client.println();
-  
-  Serial.println(getheader);//To Check
-  while (client.connected()) {
-    String line = client.readStringUntil('\n');
-    Serial.println(line);
+  else{
+    Serial.print("connection failed to ");
+    Serial.println(private_server);
   }
   
   Serial.println("Done cycle.");

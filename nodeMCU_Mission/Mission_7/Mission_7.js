@@ -36,30 +36,36 @@ count=0; // the number of input temperature data after start server.
 app.get('/', function(req,res){
 	
 	//Send the current time and temperature to Client.
-	var dt = dateTime.create();
-	var formatted = dt.format('Y-m-d H:M:S');
-	res.send(formatted+' Temp:'+req.query.temp);
-	console.log(formatted+' Temp:'+req.query.temp);
+	if(req.query.temp && typeof req.query.temp!='undefined'){
 
-	//Write to local TXT file.
-	fs.appendFile('LOG.txt',req.query.temp+'\n', function(err){
-		if(err) throw err;
-	});
-		
-	data={};
-	data.seq=count++;
-	data.type='T';		//Means 'Temperature'
-	data.device='102';	
-	data.unit='0';
-	data.ip=addresses;
-	data.value=req.query.temp;
+		var dt = dateTime.create();
+		var formatted = dt.format('Y-m-d H:M:S');
+		res.send(formatted+' Temp:'+req.query.temp);
+		console.log(formatted+' Temp:'+req.query.temp);
 	
-	//Insert data to DB by query 
-	connection.query('INSERT INTO sensors SET ?',data,function(err,rows,cols){
-		if(err) throw err;
+		//Write to local TXT file.
+		fs.appendFile('LOG.txt',req.query.temp+'\n', function(err){
+			if(err) throw err;
+		});
+			
+		data={};
+		data.seq=count++;
+		data.type='T';		//Means 'Temperature'
+		data.device='102';	
+		data.unit='0';
+		data.ip=addresses;
+		data.value=req.query.temp;
+	
+		//Insert data to DB by query 
+		connection.query('INSERT INTO sensors SET ?',data,function(err,rows,cols){
+			if(err) throw err;
 		
-		console.log('Done Insert Query');	
-	});
+			console.log('Done Insert Query');	
+		});
+	}
+	else{
+		res.send('Unauthorized Access');
+	}
 })
 
 //Work with dump command

@@ -5,7 +5,7 @@
 ![Sorry, We cannot found Img](https://raw.github.com/LamFSangUk/Capstone-Design-1/master/nodeMCU_Mission/Mission_7/_VAP_.gif "ScreenShot")
 
 ## Description
->The program to measure temperature in some place.<br />Arduino Send temperature data to your private server with http call.<br />You can heck your place's temperature in two ways.<br /><br />First, You can read data with your web-client. Just type this on your web browser's url bar.
+>The program to measure temperature in some place.<br />Arduino Send temperature data to your private server with http call.<br />You can check your place's temperature in two ways.<br /><br />First, You can read data with your web-client. Just type this on your web browser's url bar.
 ```
 [Server IP addr(or domain):3000]/dump
 ```

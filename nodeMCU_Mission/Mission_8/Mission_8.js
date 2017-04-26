@@ -125,10 +125,14 @@ app.get('/graph',function(req,res){
 			var comma = "";
 			for (var i=0; i<rows.length;i++){
 				r = rows[i];
-				data+=comma+"[new Date(2017,04-1,"+r.id +",00,38),"+r.value + "]";
+				var date=new Date(r.time).toLocaleString().split(' ');
+				//console.log(date);
+				var ymd=date[0].split('-');
+				var hms=date[1].split(':');
+				data+=comma+"[new Date("+ymd[0]+","+ymd[1]+","+ymd[2]+","+hms[0]+","+hms[1]+","+hms[2]+"),"+r.value + "]";
 				comma=",";
 			}
-			var header = "data.addColumn('data','Date/Time');";
+			var header = "data.addColumn('date','Date/Time');";
 			header+="data.addColumn('number','Temp');";
 			html=html.replace("<%COLUMN%>",header);
 			html=html.replace("<%DATA%>",data);

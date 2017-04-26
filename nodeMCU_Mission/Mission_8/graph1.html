@@ -14,17 +14,17 @@
 	
 			var options = {
 				chart: {
-					title: '<TITLE>',
-					subtitle: '<SUBTITLE>',
+					title: 'Temperature',
+					//subtitle: '<SUBTITLE>',
 					curveType: 'function'
 				},
-				width: <WIDTH>,
-				height: <HEIGHT>,
+				width: '100%',
+				height: '100%',
 				interpolateNulls: true
 			};
 
-			var chart = new google.visulaization.LineChart(document.getElementById('curve_chart'));
-			chart.draqw(data,options);
+			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+			chart.draw(data,options);
 		}
 	</script>
 </head>

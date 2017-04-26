@@ -117,7 +117,7 @@ app.get('/graph',function(req,res){
 		html=" "+html;
 		console.log('read file');
 
-		var qstr = 'SELECT * from sensors ';
+		var qstr = 'SELECT * from sensors ORDER BY time';
 		connection.query(qstr, function(err, rows, cols){
 			if(err) throw err;
 			
@@ -125,12 +125,12 @@ app.get('/graph',function(req,res){
 			var comma = "";
 			for (var i=0; i<rows.length;i++){
 				r = rows[i];
-				data+=comma+"[new Data(2017,04-1,"+r.id +",00,38),"+r.value + "]";
+				data+=comma+"[new Date(2017,04-1,"+r.id +",00,38),"+r.value + "]";
 				comma=",";
 			}
-			var header = "data.addColumn('data','Date/Time');"
-			header+="data.addColumn('number','Temp'):"
-			html=html.replace("<%HEADER%>",header);
+			var header = "data.addColumn('data','Date/Time');";
+			header+="data.addColumn('number','Temp');";
+			html=html.replace("<%COLUMN%>",header);
 			html=html.replace("<%DATA%>",data);
 
 			res.writeHeader(200,{"Content-Type": "text/html"});

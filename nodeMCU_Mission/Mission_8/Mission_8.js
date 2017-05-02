@@ -4,14 +4,36 @@ var fs = require('fs')
 
 // Connect to mysql
 var mysql = require('mysql')
-var connection = mysql.createConnection({
+var db_config = {
 	host : 'localhost',
 	user : 'sensor',
 	password : 'sgcapstone5',
 	database : 'data'
-});
+};
 
-connection.connect();	
+var connection;
+
+function handleDisconnect(){
+	connection = mysql.createConnection(db_config);
+
+	connection.connect(function(err){
+		if(err){	
+			console.log('Error when connectiong to DB:',err);
+			setTimeout(handleDisconnect,2000);
+		}
+	});
+
+	connection.on('error',function(err){
+		console.log('db error',err);
+		if(err.code === 'PROTOCOL_CONNECTION_LOST'){
+			handleDisconnect();
+		} else {
+			throw err;
+		}
+	});
+}
+
+handleDisconnect();
 
 //To Write the current time.
 var dateTime = require('node-datetime');
@@ -71,7 +93,7 @@ app.get('/', function(req,res){
 //Work with dump command
 //Show recent 1440(one day) temperature records.
 app.get('/dump',function(req,res){
-
+	console.log('Got app.get(dump)');
 	//Get Recent data from DB by query
 	connection.query('SELECT * from sensors ORDER BY id DESC LIMIT 1440',function(err,rows,cols){
 		if(err) throw err;
